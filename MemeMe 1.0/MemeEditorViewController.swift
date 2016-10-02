@@ -8,27 +8,29 @@
 
 import UIKit
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
 }
 
 fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l >= r
-  default:
-    return !(lhs < rhs)
-  }
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l >= r
+    default:
+        return !(lhs < rhs)
+    }
 }
 
 
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    // MARK: - Outlets
     
     @IBOutlet var topMemeText: UITextField!
     @IBOutlet var bottomMemeText: UITextField!
@@ -39,25 +41,22 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     @IBOutlet var bottomToolbar: UIToolbar!
     @IBOutlet var albumButton: UIBarButtonItem!
     
+    // MARK: - Properties
+    
     var initialVerticalPosForView: CGFloat!
     
     var memeTextDelegate = MemeTextDelegate()
     let pickerController = UIImagePickerController()
-    
-    struct Meme {
-        var topMemeText: String?
-        var bottomMemeText: String?
-        var originalImg: UIImage?
-        var memeImg: UIImage?
-    }
     
     let memeTextAttributes = [
         NSStrokeColorAttributeName: UIColor.black,
         NSForegroundColorAttributeName: UIColor.white,
         NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
         NSStrokeWidthAttributeName: -5
-    ] as [String : Any]
-
+        ] as [String : Any]
+    
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -80,7 +79,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         super.viewWillAppear(animated)
         
         cameraBtn.isEnabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)
-
+        
         subscribeToKeyboardNotifications()
         
     }
@@ -91,7 +90,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     
-    // Actions when toolbar buttons are tapped
+    // MARK: - Actions
     
     @IBAction func pickAlbumImage(_ sender: AnyObject) {
         
@@ -190,8 +189,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         // Hide the toolbars so that they are not in the meme
         topToolbar.isHidden = true
         bottomToolbar.isHidden = true
-        // Also hide the toolbar buttons
-        cameraBtn.tintColor = UIColor.clear
         
         UIGraphicsBeginImageContext(view.frame.size)
         view.drawHierarchy(in: view.frame, afterScreenUpdates: true)
@@ -206,6 +203,26 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         return memedImg
     }
     
+    // MARK: - Subscribe to notifications 
+    
+    func subscribeToKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(MemeEditorViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MemeEditorViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func unsubscribeFromKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    
+}
+
+// MARK: - Improve keyboard behavior
+
+extension MemeEditorViewController {
     
     // Don't let the keyboard obstruct the view
     
@@ -236,24 +253,17 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         }
         
     }
-
     
-    func subscribeToKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(MemeEditorViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(MemeEditorViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func unsubscribeFromKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        
-    }
+}
 
+// MARK: - Hide the status bar
+
+extension MemeEditorViewController {
     
     // Hide the status bar so it doesn't interfere with the top bar buttons
     override var prefersStatusBarHidden : Bool {
         return true
     }
-
+    
+    
 }
-
