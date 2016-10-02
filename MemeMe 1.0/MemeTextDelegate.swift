@@ -12,21 +12,28 @@ import UIKit
 class MemeTextDelegate: NSObject, UITextFieldDelegate {
     
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         return true
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         
         //If this is the first time entering text, clear the text field
-        if let text = textField.text where text.isEmpty
+        if let text = textField.text , text.isEmpty
         {
             textField.placeholder = ""
+            textField.defaultTextAttributes = [
+                NSStrokeColorAttributeName: UIColor.black,
+                NSForegroundColorAttributeName: UIColor.white,
+                NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+                NSStrokeWidthAttributeName: -5
+                ] as [String : Any]
+            textField.textAlignment = NSTextAlignment.center
         }
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
         

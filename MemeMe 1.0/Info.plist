@@ -43,5 +43,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To choose an image for editing, the app would like to access your photo album.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Allowing access to the camera will let you meme-ify a picture you have taken.</string>
 </dict>
 </plist>
